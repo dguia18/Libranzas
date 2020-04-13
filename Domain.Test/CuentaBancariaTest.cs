@@ -13,7 +13,7 @@ namespace Domain.Test
         [Test]
         public void ConsignacionTest()
         {
-            var cuenta = new CuentaAhorro();
+            var cuenta = new Empleado();
             cuenta.Numero = "111";
             cuenta.Nombre = "Ahorro Ejemplo";
             cuenta.Consignar(10000);
