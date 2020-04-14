@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Domain.Test
 {
-    class AbonarTest
+    class HU002
     {
         Empleado empleado;
         [SetUp]
@@ -56,5 +56,9 @@ namespace Domain.Test
             InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => empleado.Creditos[0].Abonar(50000000));
             Assert.AreEqual(esperado, ex.Message);
         }
+
+       
+
+       
     }
 }

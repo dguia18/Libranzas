@@ -5,7 +5,7 @@ using System;
 
 namespace Domain.Test
 {
-    public class CrearCreditoTest
+    public class HU001
     {
         Empleado empleado;
         [SetUp]

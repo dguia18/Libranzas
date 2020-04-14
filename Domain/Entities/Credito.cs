@@ -14,7 +14,7 @@ namespace Domain.Entities
         public double Saldo { get { return ValorAPagar - CalcularPagado(); } private set { Saldo = value; } }
         public DateTime FechaCreacion { get; private set; } = DateTime.Now;
         public List<Cuota> Cuotas { get; set; }
-        public List<Pago> Pagos { get; set; }
+        public List<Abono> Abonos { get; set; }
 
         public static double VALOR_MINIMO_DE_CREDITO = 5000000;
         public static double VALOR_MAXIMO_DE_CREDITO = 10000000;
@@ -24,7 +24,7 @@ namespace Domain.Entities
             Valor = valor;
             Plazo = plazo;
             TasaDeInteres = tasaDeInteres;
-            this.Pagos = new List<Pago>();
+            this.Abonos = new List<Abono>();
             GenerarCuotas();
         }
         public string Abonar(double valor)
@@ -32,7 +32,7 @@ namespace Domain.Entities
 
             if (CanAbonar(valor).Count != 0)
                 throw new InvalidOperationException("Operacion Invalida");
-            Pagos.Add(new Pago { Valor = valor, FechaPagado = DateTime.Now });
+            Abonos.Add(new Abono { Valor = valor, FechaAbonado = DateTime.Now });
             List<Cuota> cuotasPendientes = GetCuotasPendientes();
             int i = 0;
             do
@@ -40,15 +40,12 @@ namespace Domain.Entities
                 Cuota cuota = cuotasPendientes[i];
                 if (valor > cuota.Saldo)
                 {
-                    cuota.Estado = Estado.Pagado;
-                    valor -= cuota.Saldo;
-                    cuota.Saldo = 0;
-                    cuota.Pagado = cuota.Valor;
+                    cuota.LiquidarCuota(valor);
+                    valor -= cuota.Valor;
                 }
                 else
                 {
-                    cuota.Saldo -= valor;
-                    cuota.Pagado = valor;
+                    cuota.Abonar(valor);
                     valor = 0;
                 }
                 i++;
@@ -69,11 +66,8 @@ namespace Domain.Entities
         
         private double CalcularPagado()
         {
-            double pagado = 0;
-            foreach (Cuota cuota in Cuotas)
-            {
-                pagado += cuota.Pagado;
-            }
+            double pagado=0;
+            this.Cuotas.ForEach(cuota => pagado += cuota.Pagado);            
             return pagado;
         }
         public void GenerarCuotas()
@@ -84,7 +78,22 @@ namespace Domain.Entities
                 this.Cuotas.Add(new Cuota { Valor = ValorAPagar / Plazo, FechaDePago = FechaCreacion.AddMonths(i), Saldo = ValorAPagar/Plazo });
             }
         }
-
+        public List<string> GetAbonosString()
+        {
+            List<string> abonos = new List<string>();
+            this.Abonos.ForEach(
+                abono => abonos.Add(abono.ToString())
+                );
+            return abonos;
+        }
+        public List<string> GetCuotasString()
+        {
+            List<string> cuotas = new List<string>();
+            this.Cuotas.ForEach(
+                cuota => cuotas.Add(cuota.ToString())
+                );
+            return cuotas;
+        }
     }
 
 
