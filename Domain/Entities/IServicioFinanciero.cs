@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public interface ICredito
+    public interface IServicioFinanciero
     {
-
-        void Abonar(double valor);
+        string Abonar(double valor);
 
     }
 }

@@ -9,5 +9,9 @@ namespace Domain.Entities
         public string Nombre { get; set; }
         public double Salario { get; set; }
         public List<Credito> Creditos { get; set; }
+        public Empleado()
+        {
+            this.Creditos = new List<Credito>();
+        }
     }   
 }

@@ -9,6 +9,11 @@ namespace Domain.Entities
         public double Pagado { get; set; }
         public DateTime FechaDePago { get; set; }
         public Estado Estado { get; set; } = Estado.Pendiente;
+        public double Saldo { get; set; } 
+        public Cuota()
+        {
+            Saldo = Valor;
+        }
     }
     public enum Estado
     {
