@@ -2,6 +2,7 @@ using Domain.Entities;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 namespace Domain.Test
 {
@@ -16,39 +17,7 @@ namespace Domain.Test
             empleado.Nombre = "Duvan";
             empleado.Salario = 1200000;
         }
-
-        [Test]
-        public void ValorDeCreditoSolicitadoMenorA5Millones()
-        {
-            string esperado = "El valor solicitado para el crédito no es permitido";
-            List<string> errores = CreditBuilder.CanCreateCredit(50000, 8);
-            string obtenido = errores.Contains(esperado) ? esperado : String.Join(',', errores);
-            Assert.AreEqual(esperado, obtenido);
-        }
-        [Test]
-        public void ValorDeCreditoSolicitadoMayorA10Millones()
-        {
-            string esperado = "El valor solicitado para el crédito no es permitido";
-            List<string> errores = CreditBuilder.CanCreateCredit(15000000, 8);
-            string obtenido = errores.Contains(esperado) ? esperado : String.Join(',', errores);
-            Assert.AreEqual(esperado, obtenido);
-        }
-        [Test]
-        public void PlazoSolicitadoMayorA10Meses()
-        {
-            string esperado = "El plazo solicitado para el crédito no es permitido";
-            List<string> errores = CreditBuilder.CanCreateCredit(5000000, 11);
-            string obtenido = errores.Contains(esperado) ? esperado : String.Join(',', errores);
-            Assert.AreEqual(esperado, obtenido);
-        }
-        [Test]
-        public void TasaSolicitadaIncorrecta()
-        {
-            string esperado = "La tasa no es valida";
-            List<string> errores = CreditBuilder.CanCreateCredit(5000000, 11,5);
-            string obtenido = errores.Contains(esperado) ? esperado : String.Join(',', errores);
-            Assert.AreEqual(esperado, obtenido);
-        }
+        
         [Test]
         public void EjecutarMetodoDeCrearSinAntesValidarCAN()
         {
@@ -69,6 +38,20 @@ namespace Domain.Test
                 obtenido += credito.ValorAPagar;
             }            
             Assert.AreEqual(esperado, obtenido);
+        }
+        [TestCaseSource("TestData")]
+        public void CrearCreditoTest(double valor, int plazo, double tasa, string esperado)
+        {
+            List<string> errores = CreditBuilder.CanCreateCredit(valor, plazo, tasa);
+            string obtenido = errores.Contains(esperado) ? esperado : String.Join(',', errores);
+            Assert.AreEqual(esperado, obtenido);
+        }
+        private static IEnumerable TestData()
+        {
+            yield return new TestCaseData(50000, 8, 0.005, "El valor solicitado para el crédito no es permitido").SetName("ValorDeCreditoSolicitadoMenorA5Millones");
+            yield return new TestCaseData(15000000, 8, 0.005, "El valor solicitado para el crédito no es permitido").SetName("ValorDeCreditoSolicitadoMayorA10Millones");
+            yield return new TestCaseData(5000000, 11, 0.005, "El plazo solicitado para el crédito no es permitido").SetName("PlazoSolicitadoMayorA10Meses");
+            yield return new TestCaseData(5000000, 8, 5, "La tasa no es valida").SetName("TasaSolicitadaIncorrecta");
         }
     }
 }

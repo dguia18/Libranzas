@@ -11,7 +11,7 @@ namespace Domain.Entities
         public DateTime FechaAbonado { get;  set; }
         public override string ToString()
         {
-            return string.Format("ID: {0}\nValor: {1}\nFecha de Abono: {2}", base.Id, Valor, FechaAbonado);
+            return string.Format("Valor: {0}\nFecha de Abono: {1}", Valor, FechaAbonado);
         }
     }
 }

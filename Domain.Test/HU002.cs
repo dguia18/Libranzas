@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -55,10 +56,7 @@ namespace Domain.Test
             string esperado = "Operacion Invalida";
             InvalidOperationException ex = Assert.Throws<InvalidOperationException>(() => empleado.Creditos[0].Abonar(50000000));
             Assert.AreEqual(esperado, ex.Message);
-        }
+        }       
 
-       
-
-       
     }
 }

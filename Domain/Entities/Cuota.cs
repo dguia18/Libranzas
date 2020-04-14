@@ -29,7 +29,7 @@ namespace Domain.Entities
         }
         public override string ToString()
         {
-            return string.Format("ID: {0}\nValor: {1}\nSaldo: {2}\nFecha de Pago: {3}\n", base.Id, Valor, Saldo, FechaDePago);
+            return string.Format("Valor: {0}\nSaldo: {1}\nFecha de Pago: {2}\n", Valor, Saldo, FechaDePago);
         }
     }
     public enum Estado
