@@ -20,7 +20,7 @@ namespace Application
             if (empleado != null)
             {
                 Credito credito = empleado.Creditos.Find(t => t.Numero == request.Numero);
-                if (credito != null)
+                if (credito == null)
                 {
                     var errores = CreditBuilder.CanCreateCredit(request.Valor, request.Plazo, request.TasaDeInteres);
                     if (errores.Count == 0)
