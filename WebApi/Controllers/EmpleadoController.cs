@@ -52,8 +52,8 @@ namespace WebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Empleado>> GetAll()
         {
-            UnitOfWork unitOfWork = new UnitOfWork(_context);
-            var res = unitOfWork.EmpleadoRepository.Get(includeProperties: "Creditos"); 
+            
+            var res = _unitOfWork.EmpleadoRepository.Get(includeProperties: "Creditos"); 
             return res.ToList();
         }
     }
