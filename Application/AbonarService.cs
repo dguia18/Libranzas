@@ -1,6 +1,5 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
-using Domain.Repositories;
 using System;
 
 namespace Application
@@ -22,7 +21,7 @@ namespace Application
                 if (credito != null)
                 {
                     var errores = credito.CanAbonar(request.Valor);
-                    if (errores.Count != 0)
+                    if (errores.Count == 0)
                     {
                         string mensaje = credito.Abonar(request.Valor);
                         _unitOfWork.Commit();
