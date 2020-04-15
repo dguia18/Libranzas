@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application;
 using Domain.Contracts;
+using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Base;
 using Microsoft.AspNetCore.Http;
@@ -47,6 +48,13 @@ namespace WebApi.Controllers
             var _service = new AbonarService(new UnitOfWork(_context));
             var response = _service.Ejecutar(request);
             return Ok(response);
+        }
+        [HttpGet]
+        public ActionResult<IEnumerable<Empleado>> GetAll()
+        {
+            UnitOfWork unitOfWork = new UnitOfWork(_context);
+            var res = unitOfWork.EmpleadoRepository.Get(includeProperties: "Creditos"); 
+            return res.ToList();
         }
     }
 }

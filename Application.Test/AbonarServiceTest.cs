@@ -49,7 +49,7 @@ namespace Application.Test
         [TestCaseSource("TestData")]
         public void AbonarTest(string cedulaEmpleado, string numero, double valor, string esperado)
         {
-            var request = new AbonarRequest { CedulaEmpleado = cedulaEmpleado, NumeroCrediro = numero, Valor = valor };
+            var request = new AbonarRequest { CedulaEmpleado = cedulaEmpleado, NumeroCredito = numero, Valor = valor };
             var response = abonarService.Ejecutar(request);
             string obtenido = response.Mensaje.Contains(esperado) ? esperado : String.Join(',', response.Mensaje);
             Assert.AreEqual(esperado, obtenido);
@@ -60,7 +60,8 @@ namespace Application.Test
             yield return new TestCaseData("1065840833", "0001", 1500000, "El valor a abonar es incorrecto").SetName("ValorAAbonarMenorAlMinimoValorDeLaCuota");
             yield return new TestCaseData("1065840833", "0001", -500, "El valor a abonar es incorrecto").SetName("ValorAAbonarNegativo");
             yield return new TestCaseData("106584083", "0001", -500, $"El empleado con cedula 106584083 no se encuentra registrado en el sistema").SetName("EmpleadoNoEncontrado");
-            yield return new TestCaseData("1065840833", "0002", 5000000, $"Señor Duvan, hasta el momento no tiene un credito de numero 0002").SetName("CreditoNoEncontrado"); yield return new TestCaseData("1065840833", "0001", 5000000, $"Abono concluido, saldo pendiente $ {2140000}").SetName("ValorAAbonarCorrecto");
+            yield return new TestCaseData("1065840833", "0002", 5000000, $"Señor Duvan, hasta el momento no tiene un credito de numero 0002").SetName("CreditoNoEncontrado"); 
+            yield return new TestCaseData("1065840833", "0001", 5000000, $"Abono concluido, saldo pendiente $ {2140000}").SetName("ValorAAbonarCorrecto");
         }        
     }
 }

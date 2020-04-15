@@ -30,5 +30,11 @@ namespace Domain.Contracts
             IOrderedQueryable<T>> orderBy = null,
             string includeProperties = ""
          );
+        IEnumerable<T> Get(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>,
+            IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = ""
+         );
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts;
 using Domain.Entities;
 using System;
+using System.Linq;
 
 namespace Application
 {
@@ -14,10 +15,11 @@ namespace Application
         }
         public AbonarResponse Ejecutar(AbonarRequest request)
         {
-            Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.CedulaEmpleado);
+            Empleado empleado = _unitOfWork.EmpleadoRepository.
+                FindBy(t => t.Cedula == request.CedulaEmpleado,includeProperties:"Creditos").DefaultIfEmpty(null).FirstOrDefault();
             if (empleado != null)
             {
-                Credito credito = empleado.Creditos.Find(t => t.Numero == request.NumeroCrediro);
+                Credito credito = empleado.Creditos.Find(t => t.Numero == request.NumeroCredito);
                 if (credito != null)
                 {
                     var errores = credito.CanAbonar(request.Valor);
@@ -34,7 +36,7 @@ namespace Application
                 }
                 else
                 {
-                    return new AbonarResponse() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCrediro}" };
+                    return new AbonarResponse() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
                 }
             }
             else
@@ -46,7 +48,7 @@ namespace Application
     public class AbonarRequest
     {
         public string CedulaEmpleado { get; set; }
-        public string NumeroCrediro { get; set; }
+        public string NumeroCredito { get; set; }
         public double Valor { get; set; }
     }
     public class AbonarResponse

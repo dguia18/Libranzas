@@ -27,6 +27,33 @@ namespace Infrastructure.Base
 
             return _dbset.AsEnumerable<T>();
         }
+        public virtual IEnumerable<T> Get(
+           Expression<Func<T, bool>> filter = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+           string includeProperties = "")
+        {
+            IQueryable<T> query = _dbset;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToList();
+            }
+            else
+            {
+                return query.ToList();
+            }
+        }
 
         public virtual T Find(object id)
         {

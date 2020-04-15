@@ -12,13 +12,10 @@ namespace Infrastructure.Base
     {
         private IDbContext _dbContext;
 
-        private IEmpleadoRepository _cuentaBancariaRepository;
+        private IEmpleadoRepository _empleadoRepository;
         private ICreditoRepository _creditoRepository;
-        public IEmpleadoRepository EmpleadoRepository { get { return _cuentaBancariaRepository ?? (_cuentaBancariaRepository = new EmpleadoRepository(_dbContext)); } }
-
+        public IEmpleadoRepository EmpleadoRepository { get { return _empleadoRepository ?? (_empleadoRepository = new EmpleadoRepository(_dbContext)); } }
         public ICreditoRepository CreditoRepository { get { return _creditoRepository ?? (_creditoRepository = new CreditoRepository(_dbContext)); } }
-
-
 
 
         public UnitOfWork(IDbContext context)

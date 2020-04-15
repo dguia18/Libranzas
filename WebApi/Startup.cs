@@ -30,12 +30,13 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddDbContext<LibranzasContext>
+            //     (opt => opt.UseInMemoryDatabase("Libranzas"));
 
 
             services.AddDbContext<LibranzasContext>
-                (opt => opt.UseSqlServer("Server=.\\;Database=Libranzas;Trusted_Connection=True;MultipleActiveResultSets=true"));
-
-            ///Inyección de dependencia Especifica
+               (opt => opt.UseSqlServer(@"Server=LAPTOP-GEQ2K9D2\MSSQLSERVER01;Database=Libranzas;Trusted_Connection=True;MultipleActiveResultSets=true"));
+            ///Inyecciï¿½n de dependencia Especifica
             //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-3.0#register-additional-services-with-extension-methods
             services.AddScoped<IUnitOfWork, UnitOfWork>(); //Crear Instancia por peticion
             services.AddScoped<IDbContext, LibranzasContext>(); //Crear Instancia por peticion
