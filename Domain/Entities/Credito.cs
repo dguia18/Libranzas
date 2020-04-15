@@ -7,6 +7,7 @@ namespace Domain.Entities
 {
     public class Credito : Entity<int>, IServicioFinanciero
     {
+        public string Numero { get; set; }
         public double Valor { get; set; }
         public int Plazo { get; set; }
         public double ValorAPagar { get => Valor * (1 + TasaDeInteres * Plazo); }
@@ -26,6 +27,10 @@ namespace Domain.Entities
             TasaDeInteres = tasaDeInteres;
             this.Abonos = new List<Abono>();
             GenerarCuotas();
+        }
+        public Credito()
+        {
+
         }
         public string Abonar(double valor)
         {

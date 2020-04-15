@@ -7,7 +7,7 @@ namespace Domain.Contracts
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICuentaBancariaRepository CuentaBancariaRepository { get; }
+        IEmpleadoRepository EmpleadoRepository { get; }
         int Commit();
     }
 }

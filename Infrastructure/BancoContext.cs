@@ -7,14 +7,16 @@ using System.Text;
 
 namespace Infrastructure
 {
-    public class BancoContext : DbContextBase
+    public class LibranzasContext : DbContextBase
     {
-        public BancoContext(DbContextOptions options) : base(options)
+        public LibranzasContext(DbContextOptions options) : base(options)
         {
 
         }
-        public DbSet<Empleado> CuentasAhorro { get; set; }
-        public DbSet<Credito> CuentasCorriente { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Credito> Creditos { get; set; }
+        public DbSet<Abono> Abonos { get; set; }
+        public DbSet<Cuota> Cuotas { get; set; }
 
 
     }

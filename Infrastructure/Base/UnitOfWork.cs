@@ -12,8 +12,8 @@ namespace Infrastructure.Base
     {
         private IDbContext _dbContext;
 
-        private ICuentaBancariaRepository _cuentaBancariaRepository;
-        public ICuentaBancariaRepository CuentaBancariaRepository { get { return _cuentaBancariaRepository ?? (_cuentaBancariaRepository = new CuentaBancariaRepository(_dbContext)); } }
+        private IEmpleadoRepository _cuentaBancariaRepository;
+        public IEmpleadoRepository EmpleadoRepository { get { return _cuentaBancariaRepository ?? (_cuentaBancariaRepository = new EmpleadoRepository(_dbContext)); } }
 
 
         public UnitOfWork(IDbContext context)
