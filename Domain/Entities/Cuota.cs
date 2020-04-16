@@ -1,5 +1,6 @@
 ﻿using Domain.Base;
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -10,9 +11,11 @@ namespace Domain.Entities
         public DateTime FechaDePago { get; set; }
         public Estado Estado { get; set; } = Estado.Pendiente;
         public double Saldo { get; set; }
+        public List<Abono> Abonos { get; set; }
         public Cuota()
         {
             Saldo = Valor;
+            Abonos = new List<Abono>();
         }
 
         public string Abonar(double valor)
@@ -26,6 +29,10 @@ namespace Domain.Entities
             Estado = Estado.Pagado;
             Saldo = 0;
             Pagado = Valor;
+        }
+        public void RelacionarAbono(Abono abono)
+        {
+            this.Abonos.Add(abono);
         }
         public override string ToString()
         {

@@ -2,6 +2,7 @@
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Application
@@ -28,7 +29,7 @@ namespace Application
 
             }
             var errores = CreditBuilder.CanCreateCredit(request.Valor, request.Plazo, request.TasaDeInteres);
-            if (errores.Count != 0)
+            if (errores.Any())
             {
                 return new CrearCreditoResponse() { Mensaje = String.Join(",", errores) };
             }

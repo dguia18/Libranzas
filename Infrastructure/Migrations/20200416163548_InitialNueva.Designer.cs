@@ -4,14 +4,16 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibranzasContext))]
-    partial class LibranzasContextModelSnapshot : ModelSnapshot
+    [Migration("20200416163548_InitialNueva")]
+    partial class InitialNueva
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +31,6 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("CreditoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CuotaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("FechaAbonado")
                         .HasColumnType("datetime2");
 
@@ -41,8 +40,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreditoId");
-
-                    b.HasIndex("CuotaId");
 
                     b.ToTable("Abono");
                 });
@@ -140,10 +137,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Credito", null)
                         .WithMany("Abonos")
                         .HasForeignKey("CreditoId");
-
-                    b.HasOne("Domain.Entities.Cuota", null)
-                        .WithMany("Abonos")
-                        .HasForeignKey("CuotaId");
                 });
 
             modelBuilder.Entity("Domain.Entities.Credito", b =>

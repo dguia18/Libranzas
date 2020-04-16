@@ -16,16 +16,15 @@ namespace Application
 		public AbonarResponse Ejecutar(AbonarRequest request)
 		{
 			Empleado empleado = _unitOfWork.EmpleadoRepository.
-				FindBy(filter: t => t.Cedula == request.CedulaEmpleado, includeProperties: "Creditos").FirstOrDefault();
+				FindBy(filter: t => t.Cedula == request.CedulaEmpleado).FirstOrDefault();
 			if (empleado == null)
 			{
 				return new AbonarResponse() { Mensaje = $"El empleado con cedula {request.CedulaEmpleado} no se encuentra registrado en el sistema" };
-
 			}
 			Credito credito = _unitOfWork.CreditoRepository.FindBy(t => t.Numero == request.NumeroCredito, includeProperties: "Cuotas,Abonos").FirstOrDefault();
 			if (credito == null)
 			{
-				return new AbonarResponse() { Mensaje = $"hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
+				return new AbonarResponse() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
 			}
 			var errores = credito.CanAbonar(request.Valor);
 			if (errores.Count != 0)

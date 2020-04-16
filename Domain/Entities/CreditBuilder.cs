@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Domain.Entities
 {
@@ -16,7 +16,7 @@ namespace Domain.Entities
         }
         public static Credito CrearCredito(double valor, int plazo, double tasaDeInteres = 0.005)
         {
-            if (CanCreateCredit(valor, plazo, tasaDeInteres).Count != 0)
+            if (CanCreateCredit(valor, plazo, tasaDeInteres).Any())
                 throw new InvalidOperationException("Operacion Invalida");
             return new Credito(valor, plazo, tasaDeInteres);
         }
