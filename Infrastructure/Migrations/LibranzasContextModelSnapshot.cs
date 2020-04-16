@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibranzasContext))]
-    partial class BancoContextModelSnapshot : ModelSnapshot
+    partial class LibranzasContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -49,7 +49,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("EmpleadoId")
+                    b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaCreacion")
@@ -136,9 +136,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Credito", b =>
                 {
-                    b.HasOne("Domain.Entities.Empleado", null)
+                    b.HasOne("Domain.Entities.Empleado", "Empleado")
                         .WithMany("Creditos")
-                        .HasForeignKey("EmpleadoId");
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Cuota", b =>

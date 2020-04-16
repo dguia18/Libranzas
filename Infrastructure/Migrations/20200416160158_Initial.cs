@@ -7,14 +7,8 @@ namespace Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "MovimientoFinanciero");
-
-            migrationBuilder.DropTable(
-                name: "CuentaBancaria");
-
             migrationBuilder.CreateTable(
-                name: "Empleados",
+                name: "Empleado",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -25,11 +19,11 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Empleados", x => x.Id);
+                    table.PrimaryKey("PK_Empleado", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Creditos",
+                name: "Credito",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -39,21 +33,21 @@ namespace Infrastructure.Migrations
                     Plazo = table.Column<int>(nullable: false),
                     Saldo = table.Column<double>(nullable: false),
                     FechaCreacion = table.Column<DateTime>(nullable: false),
-                    EmpleadoId = table.Column<int>(nullable: true)
+                    EmpleadoId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Creditos", x => x.Id);
+                    table.PrimaryKey("PK_Credito", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Creditos_Empleados_EmpleadoId",
+                        name: "FK_Credito_Empleado_EmpleadoId",
                         column: x => x.EmpleadoId,
-                        principalTable: "Empleados",
+                        principalTable: "Empleado",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Abonos",
+                name: "Abono",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -64,17 +58,17 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Abonos", x => x.Id);
+                    table.PrimaryKey("PK_Abono", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Abonos_Creditos_CreditoId",
+                        name: "FK_Abono_Credito_CreditoId",
                         column: x => x.CreditoId,
-                        principalTable: "Creditos",
+                        principalTable: "Credito",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cuotas",
+                name: "Cuota",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -88,87 +82,44 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cuotas", x => x.Id);
+                    table.PrimaryKey("PK_Cuota", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cuotas_Creditos_CreditoId",
+                        name: "FK_Cuota_Credito_CreditoId",
                         column: x => x.CreditoId,
-                        principalTable: "Creditos",
+                        principalTable: "Credito",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Abonos_CreditoId",
-                table: "Abonos",
+                name: "IX_Abono_CreditoId",
+                table: "Abono",
                 column: "CreditoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Creditos_EmpleadoId",
-                table: "Creditos",
+                name: "IX_Credito_EmpleadoId",
+                table: "Credito",
                 column: "EmpleadoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cuotas_CreditoId",
-                table: "Cuotas",
+                name: "IX_Cuota_CreditoId",
+                table: "Cuota",
                 column: "CreditoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Abonos");
+                name: "Abono");
 
             migrationBuilder.DropTable(
-                name: "Cuotas");
+                name: "Cuota");
 
             migrationBuilder.DropTable(
-                name: "Creditos");
+                name: "Credito");
 
             migrationBuilder.DropTable(
-                name: "Empleados");
-
-            migrationBuilder.CreateTable(
-                name: "CuentaBancaria",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Numero = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Saldo = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CuentaBancaria", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MovimientoFinanciero",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CuentaBancariaId = table.Column<int>(type: "int", nullable: true),
-                    FechaMovimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ValorConsignacion = table.Column<double>(type: "float", nullable: false),
-                    ValorRetiro = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MovimientoFinanciero", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MovimientoFinanciero_CuentaBancaria_CuentaBancariaId",
-                        column: x => x.CuentaBancariaId,
-                        principalTable: "CuentaBancaria",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MovimientoFinanciero_CuentaBancariaId",
-                table: "MovimientoFinanciero",
-                column: "CuentaBancariaId");
+                name: "Empleado");
         }
     }
 }

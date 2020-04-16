@@ -12,11 +12,11 @@ namespace Domain.Entities
 		public int Plazo { get; set; }
 		public double ValorAPagar { get => Valor * (1 + TasaDeInteres * Plazo); }
 		public readonly double TasaDeInteres;
-		public double Saldo { get { return ValorAPagar - CalcularPagado(); } private set { Saldo = value; } }
+		//
+		public double Saldo { get { return ValorAPagar - CalcularPagado(); }  }
 		public DateTime FechaCreacion { get; private set; } = DateTime.Now;
 		public List<Cuota> Cuotas { get; set; }
 		public List<Abono> Abonos { get; set; }
-
 		public static double VALOR_MINIMO_DE_CREDITO = 5000000;
 		public static double VALOR_MAXIMO_DE_CREDITO = 10000000;
 		public static double PLAZO_MAXIMO = 10;

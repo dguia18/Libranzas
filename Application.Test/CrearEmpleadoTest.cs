@@ -1,8 +1,11 @@
+using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Base;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Application.Test
 {
@@ -20,6 +23,29 @@ namespace Application.Test
             var optionsInMemory = new DbContextOptionsBuilder<LibranzasContext>().UseInMemoryDatabase("Libranzas").Options;
 
             _context = new LibranzasContext(optionsInMemory);
+        }
+
+        [Test]
+        [Explicit]
+        public void ConsultarEmpledoConCreditosEfTest()
+        {
+
+            var optionsSqlServer = new DbContextOptionsBuilder<LibranzasContext>()
+             .UseSqlServer(@"Server=LAPTOP-GEQ2K9D2\MSSQLSERVER01;Database=Libranzas;Trusted_Connection=True;MultipleActiveResultSets=true")
+             .Options;
+            List<Empleado> empleados=null;
+            _context = new LibranzasContext(optionsSqlServer);
+            try
+            {
+                empleados = _context.Empleado.Include(i => i.Creditos).Where(t => t.Cedula == "1065840833").ToList();
+                //empleados = _context.Empleado.Include(i => i.Creditos).Where(t => t.Cedula == "1065840833").ToList();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+
+            Assert.IsNotNull(empleados);
         }
 
         [Test]
