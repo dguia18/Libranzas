@@ -16,33 +16,25 @@ namespace Application
 		public AbonarResponse Ejecutar(AbonarRequest request)
 		{
 			Empleado empleado = _unitOfWork.EmpleadoRepository.
-				FindBy(filter: t => t.Cedula == request.CedulaEmpleado, includeProperties: "Creditos").DefaultIfEmpty(null).FirstOrDefault();
-			if (empleado != null)
-			{
-				Credito credito = empleado.Creditos.Find(t => t.Numero == request.NumeroCredito);
-				if (credito != null)
-				{
-					var errores = credito.CanAbonar(request.Valor);
-					if (errores.Count == 0)
-					{
-						string mensaje = credito.Abonar(request.Valor);
-						_unitOfWork.Commit();
-						return new AbonarResponse() { Mensaje = mensaje };
-					}
-					else
-					{
-						return new AbonarResponse() { Mensaje = String.Join(",", errores) };
-					}
-				}
-				else
-				{
-					return new AbonarResponse() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
-				}
-			}
-			else
+				FindBy(filter: t => t.Cedula == request.CedulaEmpleado, includeProperties: "Creditos").FirstOrDefault();
+			if (empleado == null)
 			{
 				return new AbonarResponse() { Mensaje = $"El empleado con cedula {request.CedulaEmpleado} no se encuentra registrado en el sistema" };
+
 			}
+			Credito credito = _unitOfWork.CreditoRepository.FindBy(t => t.Numero == request.NumeroCredito, includeProperties: "Cuotas,Abonos").FirstOrDefault();
+			if (credito == null)
+			{
+				return new AbonarResponse() { Mensaje = $"hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
+			}
+			var errores = credito.CanAbonar(request.Valor);
+			if (errores.Count != 0)
+			{
+				return new AbonarResponse() { Mensaje = String.Join(",", errores) };
+			}
+			string mensaje = credito.Abonar(request.Valor);
+			_unitOfWork.Commit();
+			return new AbonarResponse() { Mensaje = mensaje };
 		}
 	}
 	public class AbonarRequest

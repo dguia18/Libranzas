@@ -13,10 +13,10 @@ namespace Infrastructure
         {
 
         }
-        public DbSet<Empleado> Empleados { get; set; }
-        public DbSet<Credito> Creditos { get; set; }
-        public DbSet<Abono> Abonos { get; set; }
-        public DbSet<Cuota> Cuotas { get; set; }
+        public DbSet<Empleado> Empleado { get; set; }
+        public DbSet<Credito> Credito { get; set; }
+        public DbSet<Abono> Abono { get; set; }
+        public DbSet<Cuota> Cuota { get; set; }
 
 
     }

@@ -17,20 +17,18 @@ namespace Application
         public CrearEmpleadoResponse Ejecutar(CrearEmpleadoRequest request)
         {
             Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.Cedula);
-            if (empleado == null)
-            {
-                Empleado empleadoNuevo = new Empleado();
-                empleadoNuevo.Nombre = request.Nombre;
-                empleadoNuevo.Cedula = request.Cedula;
-                empleadoNuevo.Salario = request.Salario;
-                _unitOfWork.EmpleadoRepository.Add(empleadoNuevo);
-                _unitOfWork.Commit();
-                return new CrearEmpleadoResponse() { Mensaje = $"Se registro con exito el empleado {empleadoNuevo.Nombre}." };
-            }
-            else
+            if (empleado != null)
             {
                 return new CrearEmpleadoResponse() { Mensaje = $"El empleado con numero de cedula {empleado.Cedula} ya se encuentra registrado" };
             }
+            Empleado empleadoNuevo = new Empleado();
+            empleadoNuevo.Nombre = request.Nombre;
+            empleadoNuevo.Cedula = request.Cedula;
+            empleadoNuevo.Salario = request.Salario;
+            _unitOfWork.EmpleadoRepository.Add(empleadoNuevo);
+            _unitOfWork.Commit();
+            return new CrearEmpleadoResponse() { Mensaje = $"Se registro con exito el empleado {empleadoNuevo.Nombre}." };
+
         }
 
 

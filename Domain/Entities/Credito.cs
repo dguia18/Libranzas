@@ -78,7 +78,7 @@ namespace Domain.Entities
 		private double CalcularPagado()
 		{
 			double pagado = 0;
-			this.Cuotas.ForEach(cuota => pagado += cuota.Pagado);
+			this.Abonos.ForEach(abono => pagado += abono.Valor);
 			return pagado;
 		}
 		public void GenerarCuotas()

@@ -27,32 +27,17 @@ namespace WebApi.Controllers
             _context = context;
         }
 
-        [HttpPost("CrearEmpleado")]
+        [HttpPost("")]
         public ActionResult<CrearEmpleadoResponse> Post(CrearEmpleadoRequest request)
         {
             CrearEmpleadoService _service = new CrearEmpleadoService(_unitOfWork);
             CrearEmpleadoResponse response = _service.Ejecutar(request);
             return Ok(response);
         }
-        [HttpPost("CrearCredito")]
-        public ActionResult<CrearCreditoResponse> Post(CrearCreditoRequest request)
-        {
-            CrearCreditoService _service = new CrearCreditoService(_unitOfWork);
-            CrearCreditoResponse response = _service.Ejecutar(request);
-            return Ok(response);
-        }
-
-        [HttpPost("Abonar")]
-        public ActionResult<AbonarResponse> Post(AbonarRequest request)
-        {
-            var _service = new AbonarService(new UnitOfWork(_context));
-            var response = _service.Ejecutar(request);
-            return Ok(response);
-        }
+        
         [HttpGet]
         public ActionResult<IEnumerable<Empleado>> GetAll()
-        {
-            
+        {            
             var res = _unitOfWork.EmpleadoRepository.Get(includeProperties: "Creditos"); 
             return res.ToList();
         }

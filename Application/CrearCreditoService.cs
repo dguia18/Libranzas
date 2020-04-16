@@ -17,39 +17,28 @@ namespace Application
         public CrearCreditoResponse Ejecutar(CrearCreditoRequest request)
         {
             Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.CedulaEmpleado);
-            if (empleado != null)
-            {
-                Credito credito = empleado.Creditos.Find(t => t.Numero == request.Numero);
-                if (credito == null)
-                {
-                    var errores = CreditBuilder.CanCreateCredit(request.Valor, request.Plazo, request.TasaDeInteres);
-                    if (errores.Count == 0)
-                    {
-                        Credito credritoNuevo = CreditBuilder.CrearCredito(request.Valor, request.Plazo, request.TasaDeInteres);
-                        credritoNuevo.Numero = request.Numero;
-                        empleado.Creditos.Add(credritoNuevo);
-                        _unitOfWork.EmpleadoRepository.Edit(empleado);
-                        _unitOfWork.Commit();
-                        return new CrearCreditoResponse() { Mensaje = $"El valor a total para el crédito es ${credritoNuevo.ValorAPagar}" };
-                    }
-                    else
-                    {
-                        return new CrearCreditoResponse() { Mensaje = String.Join(",", errores) };
-                    }
-                }
-                else
-                {
-                    return new CrearCreditoResponse() { Mensaje = $"El número de credito {request.Numero} ya existe" };
-                }
-            }
-            else
+            if (empleado == null)
             {
                 return new CrearCreditoResponse() { Mensaje = $"El número de cedula {request.CedulaEmpleado} no existe" };
             }
+            Credito credito = empleado.Creditos.Find(t => t.Numero == request.Numero);
+            if (credito != null)
+            {
+                return new CrearCreditoResponse() { Mensaje = $"El número de credito {request.Numero} ya existe" };
+
+            }
+            var errores = CreditBuilder.CanCreateCredit(request.Valor, request.Plazo, request.TasaDeInteres);
+            if (errores.Count != 0)
+            {
+                return new CrearCreditoResponse() { Mensaje = String.Join(",", errores) };
+            }
+            Credito credritoNuevo = CreditBuilder.CrearCredito(request.Valor, request.Plazo, request.TasaDeInteres);
+            credritoNuevo.Numero = request.Numero;
+            empleado.Creditos.Add(credritoNuevo);
+            _unitOfWork.EmpleadoRepository.Edit(empleado);
+            _unitOfWork.Commit();
+            return new CrearCreditoResponse() { Mensaje = $"El valor a total para el crédito es ${credritoNuevo.ValorAPagar}" };
         }
-
-
-
     }
     public class CrearCreditoRequest
     {
