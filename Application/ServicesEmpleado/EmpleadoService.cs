@@ -1,25 +1,23 @@
-﻿using Domain.Contracts;
+﻿using Application.Base;
+using Domain.Contracts;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application
 {
-    public class CrearEmpleadoService
+    public class EmpleadoService
     {
         readonly IUnitOfWork _unitOfWork;
 
-        public CrearEmpleadoService(IUnitOfWork unitOfWork)
+        public EmpleadoService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public CrearEmpleadoResponse Ejecutar(CrearEmpleadoRequest request)
+        public Response CrearEmpleado(CrearEmpleadoRequest request)
         {
             Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.Cedula);
             if (empleado != null)
             {
-                return new CrearEmpleadoResponse() { Mensaje = $"El empleado con numero de cedula {empleado.Cedula} ya se encuentra registrado" };
+                return new Response() { Mensaje = $"El empleado con numero de cedula {empleado.Cedula} ya se encuentra registrado" };
             }
             Empleado empleadoNuevo = new Empleado();
             empleadoNuevo.Nombre = request.Nombre;
@@ -27,7 +25,7 @@ namespace Application
             empleadoNuevo.Salario = request.Salario;
             _unitOfWork.EmpleadoRepository.Add(empleadoNuevo);
             _unitOfWork.Commit();
-            return new CrearEmpleadoResponse() { Mensaje = $"Se registro con exito el empleado {empleadoNuevo.Nombre}." };
+            return new Response() { Mensaje = $"Se registro con exito el empleado {empleadoNuevo.Nombre}." };
 
         }
 
@@ -40,8 +38,5 @@ namespace Application
         public string Nombre { get; set; }
         public double Salario { get; set; }
     }
-    public class CrearEmpleadoResponse
-    {
-        public string Mensaje { get; set; }
-    }
+
 }

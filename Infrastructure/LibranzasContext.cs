@@ -1,9 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Base;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure
 {
@@ -13,11 +10,14 @@ namespace Infrastructure
         {
 
         }
-        public DbSet<Empleado> Empleado { get; set; }
-        public DbSet<Credito> Credito { get; set; }
-        public DbSet<Abono> Abono { get; set; }
-        public DbSet<Cuota> Cuota { get; set; }
-
-
+        public DbSet<Empleado> Empleados { get; set; }
+        public DbSet<Credito> Creditos { get; set; }
+        public DbSet<Abono> Abonos { get; set; }
+        public DbSet<Cuota> Cuotas { get; set; }
+        public DbSet<AbonoCuota> AbonoCuotas { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AbonoCuota>().HasKey(ac => new {ac.CuotaId , ac.AbonoId});
+        }
     }
 }

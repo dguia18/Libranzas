@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Application;
+using Application.Base;
 using Domain.Contracts;
 using Domain.Entities;
 using Infrastructure;
-using Infrastructure.Base;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers
 {
@@ -28,17 +24,17 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("")]
-        public ActionResult<CrearEmpleadoResponse> Post(CrearEmpleadoRequest request)
+        public ActionResult<Response> Post(CrearEmpleadoRequest request)
         {
-            CrearEmpleadoService _service = new CrearEmpleadoService(_unitOfWork);
-            CrearEmpleadoResponse response = _service.Ejecutar(request);
+            EmpleadoService _service = new EmpleadoService(_unitOfWork);
+            Response response = _service.CrearEmpleado(request);
             return Ok(response);
         }
         
         [HttpGet]
         public ActionResult<IEnumerable<Empleado>> GetAll()
         {            
-            var res = _unitOfWork.EmpleadoRepository.Get(includeProperties: "Creditos"); 
+            var res = _unitOfWork.EmpleadoRepository.FindBy(includeProperties: "Creditos"); 
             return res.ToList();
         }
     }

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Infrastructure.Base
 {
@@ -26,45 +25,14 @@ namespace Infrastructure.Base
         {
 
             return _dbset.AsEnumerable<T>();
-        }
-        public virtual IEnumerable<T> Get(
-           Expression<Func<T, bool>> filter = null,
-           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-           string includeProperties = "")
-        {
-            IQueryable<T> query = _dbset;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                return orderBy(query).ToList();
-            }
-            else
-            {
-                return query.ToList();
-            }
-        }
+        }        
 
         public virtual T Find(object id)
         {
             return _dbset.Find(id);
         }
 
-        public IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate)
-        {
-            IEnumerable<T> query = _dbset.Where(predicate).AsEnumerable();
-            return query;
-        }
+        
 
         protected IQueryable<T> FindByAsQueryable(Expression<Func<T, bool>> predicate)
         {
@@ -75,7 +43,11 @@ namespace Infrastructure.Base
         {
             return _dbset.AsQueryable();
         }
-
+        public IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate)
+        {
+            IEnumerable<T> query = _dbset.Where(predicate).AsEnumerable();
+            return query;
+        }
         public virtual IEnumerable<T> FindBy(
         Expression<Func<T, bool>> filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,

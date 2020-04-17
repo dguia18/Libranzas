@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Application;
+using Application.Base;
 using Domain.Contracts;
 using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Base;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -24,17 +22,17 @@ namespace WebApi.Controllers
 			_context = context;
 		}
 		[HttpPost("")]
-		public ActionResult<CrearCreditoResponse> Post(CrearCreditoRequest request)
+		public ActionResult<Response> Post(CrearCreditoRequest request)
 		{
-			CrearCreditoService _service = new CrearCreditoService(_unitOfWork);
-			CrearCreditoResponse response = _service.Ejecutar(request);
+			CreditoService _service = new CreditoService(_unitOfWork);
+			Response response = _service.CrearCredito(request);
 			return Ok(response);
 		}
 		[HttpPost("Abonar")]
-		public ActionResult<AbonarResponse> Post(AbonarRequest request)
+		public ActionResult<Response> Post(AbonarRequest request)
 		{
-			AbonarService _service = new AbonarService(_unitOfWork);
-			var response = _service.Ejecutar(request);
+			CreditoService _service = new CreditoService(_unitOfWork);
+			var response = _service.Abonar(request);
 			return Ok(response);
 		}
 		[HttpGet]
@@ -48,7 +46,7 @@ namespace WebApi.Controllers
 		public ActionResult<IEnumerable<Credito>> Get(long id)
 		{
 			
-			var res = _unitOfWork.CreditoRepository.Get(t => t.Id == id);
+			var res = _unitOfWork.CreditoRepository.FindBy(t => t.Id == id);
 			return res.ToList();
 		}
 	}

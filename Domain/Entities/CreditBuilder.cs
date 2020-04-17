@@ -6,6 +6,10 @@ namespace Domain.Entities
 {
     public class CreditBuilder
     {
+        protected CreditBuilder()
+        {
+        }
+
         public static List<string> CanCreateCredit(double valor, int plazo, double tasaDeInteres = 0.005)
         {
             var errores = new List<string>();

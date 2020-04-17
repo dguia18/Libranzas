@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LibranzasContext))]
-    [Migration("20200416160158_Initial")]
+    [Migration("20200416220824_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,25 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreditoId");
 
-                    b.ToTable("Abono");
+                    b.ToTable("Abonos");
+                });
+
+            modelBuilder.Entity("Domain.Entities.AbonoCuota", b =>
+                {
+                    b.Property<int>("CuotaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AbonoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("CuotaId", "AbonoId");
+
+                    b.HasIndex("AbonoId");
+
+                    b.ToTable("AbonoCuotas");
                 });
 
             modelBuilder.Entity("Domain.Entities.Credito", b =>
@@ -51,7 +69,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("EmpleadoId")
+                    b.Property<int?>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaCreacion")
@@ -66,6 +84,9 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Saldo")
                         .HasColumnType("float");
 
+                    b.Property<double>("TasaDeInteres")
+                        .HasColumnType("float");
+
                     b.Property<double>("Valor")
                         .HasColumnType("float");
 
@@ -73,7 +94,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EmpleadoId");
 
-                    b.ToTable("Credito");
+                    b.ToTable("Creditos");
                 });
 
             modelBuilder.Entity("Domain.Entities.Cuota", b =>
@@ -105,7 +126,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreditoId");
 
-                    b.ToTable("Cuota");
+                    b.ToTable("Cuotas");
                 });
 
             modelBuilder.Entity("Domain.Entities.Empleado", b =>
@@ -126,7 +147,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empleado");
+                    b.ToTable("Empleados");
                 });
 
             modelBuilder.Entity("Domain.Entities.Abono", b =>
@@ -136,13 +157,26 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("CreditoId");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Credito", b =>
+            modelBuilder.Entity("Domain.Entities.AbonoCuota", b =>
                 {
-                    b.HasOne("Domain.Entities.Empleado", "Empleado")
-                        .WithMany("Creditos")
-                        .HasForeignKey("EmpleadoId")
+                    b.HasOne("Domain.Entities.Abono", "Abono")
+                        .WithMany("AbonoCuotas")
+                        .HasForeignKey("AbonoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Entities.Cuota", "Cuota")
+                        .WithMany("AbonoCuotas")
+                        .HasForeignKey("CuotaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Credito", b =>
+                {
+                    b.HasOne("Domain.Entities.Empleado", null)
+                        .WithMany("Creditos")
+                        .HasForeignKey("EmpleadoId");
                 });
 
             modelBuilder.Entity("Domain.Entities.Cuota", b =>

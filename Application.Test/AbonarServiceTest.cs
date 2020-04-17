@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Test
 {
@@ -13,9 +11,8 @@ namespace Application.Test
     {
         LibranzasContext _context;        
         UnitOfWork unitOfWork;
-        private CrearEmpleadoService crearEmpleadoService;
-        private CrearCreditoService crearCreditoService;
-        private AbonarService abonarService;
+        private EmpleadoService empleadoService;
+        private CreditoService creditoService;
 
         [SetUp]
         public void SetUp()
@@ -28,29 +25,28 @@ namespace Application.Test
             _context = new LibranzasContext(optionsInMemory);
             unitOfWork = new UnitOfWork(_context);
             CrearEmpleado();
-            CrearCredito();
-            abonarService = new AbonarService(unitOfWork);
+            CrearCredito();            
         }
 
         private void CrearCredito()
         {
-            crearCreditoService = new CrearCreditoService(unitOfWork);
+            creditoService = new CreditoService(unitOfWork);
             var requestCredito = new CrearCreditoRequest { CedulaEmpleado = "1065840833", Numero = "0001", Plazo = 4, TasaDeInteres = 0.005, Valor = 7000000 };
-            crearCreditoService.Ejecutar(requestCredito);
+            creditoService.CrearCredito(requestCredito);
         }
 
         private void CrearEmpleado()
         {
-            crearEmpleadoService = new CrearEmpleadoService(unitOfWork);
+            empleadoService = new EmpleadoService(unitOfWork);
             var requestEmpleado = new CrearEmpleadoRequest { Cedula = "1065840833", Nombre = "Duvan", Salario = 1200000 };
-            crearEmpleadoService.Ejecutar(requestEmpleado);
+            empleadoService.CrearEmpleado(requestEmpleado);
         }
 
         [TestCaseSource("TestData")]
         public void AbonarTest(string cedulaEmpleado, string numero, double valor, string esperado)
         {
             var request = new AbonarRequest { CedulaEmpleado = cedulaEmpleado, NumeroCredito = numero, Valor = valor };
-            var response = abonarService.Ejecutar(request);
+            var response = creditoService.Abonar(request);
             string obtenido = response.Mensaje.Contains(esperado) ? esperado : String.Join(',', response.Mensaje);
             Assert.AreEqual(esperado, obtenido);
         }

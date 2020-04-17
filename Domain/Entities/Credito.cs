@@ -17,9 +17,9 @@ namespace Domain.Entities
 		public List<Cuota> Cuotas { get; set; }
 		public List<Abono> Abonos { get; set; }
 
-		public static double VALOR_MINIMO_DE_CREDITO = 5000000;
-		public static double VALOR_MAXIMO_DE_CREDITO = 10000000;
-		public static double PLAZO_MAXIMO = 10;
+		public const double VALOR_MINIMO_DE_CREDITO = 5000000;
+		public const double VALOR_MAXIMO_DE_CREDITO = 10000000;
+		public const double PLAZO_MAXIMO = 10;
 		public Credito(double valor, int plazo, double tasaDeInteres)
 		{
 			Valor = valor;
@@ -49,6 +49,7 @@ namespace Domain.Entities
 				throw new InvalidOperationException("Operacion Invalida");
 			Abono abono = new Abono { Valor = valor, FechaAbonado = DateTime.Now };
 			Abonos.Add(abono);
+			AbonoCuota abonoCuota;
 			List<Cuota> cuotasPendientes = GetCuotasPendientes();
 			int i = 0;
 			do
@@ -64,14 +65,17 @@ namespace Domain.Entities
 					cuota.Abonar(valor);
 					valor = 0;
 				}
-				cuota.RelacionarAbono(abono);
+				abonoCuota = new AbonoCuota (abono, cuota );
+				abono.AbonoCuotas.Add(abonoCuota);
+				cuota.AbonoCuotas.Add(abonoCuota);
 				i++;
 			} while (valor > 0);
 			return $"Abono concluido, saldo pendiente $ {GetSaldo()}";
 		}
 		private double GetSaldo()
 		{
-			return ValorAPagar - CalcularPagado();
+			Saldo = ValorAPagar - CalcularPagado();
+			return Saldo;
 		}
 		public List<string> CanAbonar(double valor)
 		{

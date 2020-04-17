@@ -3,7 +3,6 @@ using Infrastructure;
 using Infrastructure.Base;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,7 +36,7 @@ namespace Application.Test
             _context = new LibranzasContext(optionsSqlServer);
             try
             {
-                empleados = _context.Empleado.Include(i => i.Creditos).Where(t => t.Cedula == "1065840833").ToList();
+                empleados = _context.Empleados.Include(i => i.Creditos).Where(t => t.Cedula == "1065840833").ToList();
                 //empleados = _context.Empleado.Include(i => i.Creditos).Where(t => t.Cedula == "1065840833").ToList();
             }
             catch (System.Exception)
@@ -52,17 +51,17 @@ namespace Application.Test
         public void RegistrarEmpleadoRepetidoTest()
         {
             var request = new CrearEmpleadoRequest { Cedula = "1065840833", Nombre= "Duvan", Salario= 1200000};
-            CrearEmpleadoService _service = new CrearEmpleadoService(new UnitOfWork(_context));
-            _service.Ejecutar(request);
-            var response = _service.Ejecutar(request);
+            EmpleadoService _service = new EmpleadoService(new UnitOfWork(_context));
+            _service.CrearEmpleado(request);
+            var response = _service.CrearEmpleado(request);
             Assert.AreEqual($"El empleado con numero de cedula 1065840833 ya se encuentra registrado", response.Mensaje);
         }
         [Test]
         public void RegistrarEmpleadoTest()
         {
             var request = new CrearEmpleadoRequest { Cedula = "98032461204", Nombre= "Duvan", Salario= 1200000};
-            CrearEmpleadoService _service = new CrearEmpleadoService(new UnitOfWork(_context));
-            var response = _service.Ejecutar(request);
+            EmpleadoService _service = new EmpleadoService(new UnitOfWork(_context));
+            var response = _service.CrearEmpleado(request);
             Assert.AreEqual($"Se registro con exito el empleado Duvan.", response.Mensaje);
         }
         

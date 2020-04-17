@@ -8,7 +8,7 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Empleado",
+                name: "Empleados",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -19,11 +19,11 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Empleado", x => x.Id);
+                    table.PrimaryKey("PK_Empleados", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Credito",
+                name: "Creditos",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -31,23 +31,24 @@ namespace Infrastructure.Migrations
                     Numero = table.Column<string>(nullable: true),
                     Valor = table.Column<double>(nullable: false),
                     Plazo = table.Column<int>(nullable: false),
+                    TasaDeInteres = table.Column<double>(nullable: false),
                     Saldo = table.Column<double>(nullable: false),
                     FechaCreacion = table.Column<DateTime>(nullable: false),
-                    EmpleadoId = table.Column<int>(nullable: false)
+                    EmpleadoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Credito", x => x.Id);
+                    table.PrimaryKey("PK_Creditos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Credito_Empleado_EmpleadoId",
+                        name: "FK_Creditos_Empleados_EmpleadoId",
                         column: x => x.EmpleadoId,
-                        principalTable: "Empleado",
+                        principalTable: "Empleados",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Abono",
+                name: "Abonos",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -58,17 +59,17 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Abono", x => x.Id);
+                    table.PrimaryKey("PK_Abonos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Abono_Credito_CreditoId",
+                        name: "FK_Abonos_Creditos_CreditoId",
                         column: x => x.CreditoId,
-                        principalTable: "Credito",
+                        principalTable: "Creditos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cuota",
+                name: "Cuotas",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -82,44 +83,77 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cuota", x => x.Id);
+                    table.PrimaryKey("PK_Cuotas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cuota_Credito_CreditoId",
+                        name: "FK_Cuotas_Creditos_CreditoId",
                         column: x => x.CreditoId,
-                        principalTable: "Credito",
+                        principalTable: "Creditos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AbonoCuotas",
+                columns: table => new
+                {
+                    AbonoId = table.Column<int>(nullable: false),
+                    CuotaId = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AbonoCuotas", x => new { x.CuotaId, x.AbonoId });
+                    table.ForeignKey(
+                        name: "FK_AbonoCuotas_Abonos_AbonoId",
+                        column: x => x.AbonoId,
+                        principalTable: "Abonos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AbonoCuotas_Cuotas_CuotaId",
+                        column: x => x.CuotaId,
+                        principalTable: "Cuotas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Abono_CreditoId",
-                table: "Abono",
+                name: "IX_AbonoCuotas_AbonoId",
+                table: "AbonoCuotas",
+                column: "AbonoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Abonos_CreditoId",
+                table: "Abonos",
                 column: "CreditoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Credito_EmpleadoId",
-                table: "Credito",
+                name: "IX_Creditos_EmpleadoId",
+                table: "Creditos",
                 column: "EmpleadoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cuota_CreditoId",
-                table: "Cuota",
+                name: "IX_Cuotas_CreditoId",
+                table: "Cuotas",
                 column: "CreditoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Abono");
+                name: "AbonoCuotas");
 
             migrationBuilder.DropTable(
-                name: "Cuota");
+                name: "Abonos");
 
             migrationBuilder.DropTable(
-                name: "Credito");
+                name: "Cuotas");
 
             migrationBuilder.DropTable(
-                name: "Empleado");
+                name: "Creditos");
+
+            migrationBuilder.DropTable(
+                name: "Empleados");
         }
     }
 }

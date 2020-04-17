@@ -29,9 +29,6 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("CreditoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CuotaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("FechaAbonado")
                         .HasColumnType("datetime2");
 
@@ -42,9 +39,25 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreditoId");
 
-                    b.HasIndex("CuotaId");
+                    b.ToTable("Abonos");
+                });
 
-                    b.ToTable("Abono");
+            modelBuilder.Entity("Domain.Entities.AbonoCuota", b =>
+                {
+                    b.Property<int>("CuotaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AbonoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("CuotaId", "AbonoId");
+
+                    b.HasIndex("AbonoId");
+
+                    b.ToTable("AbonoCuotas");
                 });
 
             modelBuilder.Entity("Domain.Entities.Credito", b =>
@@ -79,7 +92,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("EmpleadoId");
 
-                    b.ToTable("Credito");
+                    b.ToTable("Creditos");
                 });
 
             modelBuilder.Entity("Domain.Entities.Cuota", b =>
@@ -111,7 +124,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreditoId");
 
-                    b.ToTable("Cuota");
+                    b.ToTable("Cuotas");
                 });
 
             modelBuilder.Entity("Domain.Entities.Empleado", b =>
@@ -132,7 +145,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empleado");
+                    b.ToTable("Empleados");
                 });
 
             modelBuilder.Entity("Domain.Entities.Abono", b =>
@@ -140,10 +153,21 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Credito", null)
                         .WithMany("Abonos")
                         .HasForeignKey("CreditoId");
+                });
 
-                    b.HasOne("Domain.Entities.Cuota", null)
-                        .WithMany("Abonos")
-                        .HasForeignKey("CuotaId");
+            modelBuilder.Entity("Domain.Entities.AbonoCuota", b =>
+                {
+                    b.HasOne("Domain.Entities.Abono", "Abono")
+                        .WithMany("AbonoCuotas")
+                        .HasForeignKey("AbonoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Cuota", "Cuota")
+                        .WithMany("AbonoCuotas")
+                        .HasForeignKey("CuotaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Credito", b =>
