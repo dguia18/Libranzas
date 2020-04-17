@@ -1,6 +1,7 @@
 ﻿using Application.Base;
 using Domain.Contracts;
 using Domain.Entities;
+using System.Collections.Generic;
 
 namespace Application
 {
@@ -14,7 +15,7 @@ namespace Application
         }
         public Response CrearEmpleado(CrearEmpleadoRequest request)
         {
-            Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.Cedula);
+            Empleado empleado = GetEmpleado(request.Cedula);
             if (empleado != null)
             {
                 return new Response() { Mensaje = $"El empleado con numero de cedula {empleado.Cedula} ya se encuentra registrado" };
@@ -29,8 +30,15 @@ namespace Application
 
         }
 
-
-
+        public Empleado GetEmpleado(string cedula)
+        {
+            return _unitOfWork.EmpleadoRepository.
+                FindFirstOrDefault(t => t.Cedula == cedula);
+        }
+        public IEnumerable<Empleado> GetEmpleados()
+        {
+            return _unitOfWork.EmpleadoRepository.FindBy();
+        }
     }
     public class CrearEmpleadoRequest
     {

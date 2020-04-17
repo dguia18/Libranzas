@@ -15,8 +15,8 @@ namespace WebApi.Controllers
 	public class CreditoController : ControllerBase
 	{
 		readonly LibranzasContext _context;
-		readonly IUnitOfWork _unitOfWork;
-		CreditoService CreditoService;
+		private readonly IUnitOfWork _unitOfWork;
+		readonly CreditoService CreditoService;
 		public CreditoController(LibranzasContext context, IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
@@ -40,10 +40,10 @@ namespace WebApi.Controllers
 		{			
 			return CreditoService.GetCreditos().ToList();
 		}
-		[HttpGet("{cedula}")]
-		public ActionResult<Credito> Get(string cedula)
+		[HttpGet("{numero}")]
+		public ActionResult<Credito> Get(string numero)
 		{
-			return Ok( CreditoService.GetEmpleado(cedula)); 
+			return Ok(CreditoService.GetCredito(numero));
 		}
 		[HttpGet("abonos")]
 		public ActionResult<IEnumerable<AbonoCuota>> GetAbonoCuotas()

@@ -10,14 +10,15 @@ namespace Application
     public class CreditoService
     {
         readonly IUnitOfWork _unitOfWork;
-
+        EmpleadoService empleadoService;
         public CreditoService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            empleadoService = new EmpleadoService(_unitOfWork);
         }
         public Response CrearCredito(CrearCreditoRequest request)
         {
-            Empleado empleado = GetEmpleado(request.CedulaEmpleado);
+            Empleado empleado = empleadoService.GetEmpleado(request.CedulaEmpleado);
             if (empleado == null)
             {
                 return new Response() { Mensaje = $"El número de cedula {request.CedulaEmpleado} no existe" };
@@ -42,7 +43,7 @@ namespace Application
         }
         public Response Abonar(AbonarRequest request)
         {
-            Empleado empleado = GetEmpleado(request.CedulaEmpleado);
+            Empleado empleado = empleadoService.GetEmpleado(request.CedulaEmpleado);
             if (empleado == null)
             {
                 return new Response() { Mensaje = $"El empleado con cedula {request.CedulaEmpleado} no se encuentra registrado en el sistema" };
@@ -60,12 +61,7 @@ namespace Application
             string mensaje = credito.Abonar(request.Valor);
             _unitOfWork.Commit();
             return new Response() { Mensaje = mensaje };
-        }
-        public Empleado GetEmpleado(string cedula)
-        {
-            return _unitOfWork.EmpleadoRepository.
-                FindFirstOrDefault(t => t.Cedula == cedula);
-        }
+        }        
         public Credito GetCredito(string numero)
         {
             return _unitOfWork.CreditoRepository.

@@ -15,27 +15,32 @@ namespace WebApi.Controllers
     {
         readonly LibranzasContext _context;
         readonly IUnitOfWork _unitOfWork;
+        readonly EmpleadoService empleadoService;
 
         //Se Recomienda solo dejar la Unidad de Trabajo
         public EmpleadoController(LibranzasContext context, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _context = context;
+            empleadoService = new EmpleadoService(_unitOfWork);
         }
 
         [HttpPost("")]
         public ActionResult<Response> Post(CrearEmpleadoRequest request)
         {
-            EmpleadoService _service = new EmpleadoService(_unitOfWork);
-            Response response = _service.CrearEmpleado(request);
+            Response response = empleadoService.CrearEmpleado(request);
             return Ok(response);
         }
-        
+        [HttpGet("{cedula}")]
+        public ActionResult<Credito> Get(string cedula)
+        {
+            return Ok(empleadoService.GetEmpleado(cedula));
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<Empleado>> GetAll()
-        {            
-            var res = _unitOfWork.EmpleadoRepository.FindBy(includeProperties: "Creditos"); 
-            return res.ToList();
+        {                        
+            return empleadoService.GetEmpleados().ToList();
         }
     }
 }
