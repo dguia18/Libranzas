@@ -17,12 +17,12 @@ namespace Application
         }
         public Response CrearCredito(CrearCreditoRequest request)
         {
-            Empleado empleado = _unitOfWork.EmpleadoRepository.FindFirstOrDefault(t => t.Cedula == request.CedulaEmpleado);
+            Empleado empleado = GetEmpleado(request.CedulaEmpleado);
             if (empleado == null)
             {
                 return new Response() { Mensaje = $"El número de cedula {request.CedulaEmpleado} no existe" };
             }
-            Credito credito = empleado.Creditos.Find(t => t.Numero == request.Numero);
+            Credito credito = GetCredito(request.Numero);
             if (credito != null)
             {
                 return new Response() { Mensaje = $"El número de credito {request.Numero} ya existe" };
@@ -42,13 +42,12 @@ namespace Application
         }
         public Response Abonar(AbonarRequest request)
         {
-            Empleado empleado = _unitOfWork.EmpleadoRepository.
-                FindBy(filter: t => t.Cedula == request.CedulaEmpleado).FirstOrDefault();
+            Empleado empleado = GetEmpleado(request.CedulaEmpleado);
             if (empleado == null)
             {
                 return new Response() { Mensaje = $"El empleado con cedula {request.CedulaEmpleado} no se encuentra registrado en el sistema" };
             }
-            Credito credito = _unitOfWork.CreditoRepository.FindBy(t => t.Numero == request.NumeroCredito, includeProperties: "Cuotas,Abonos").FirstOrDefault();
+            Credito credito = GetCredito(request.NumeroCredito);
             if (credito == null)
             {
                 return new Response() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
@@ -62,6 +61,27 @@ namespace Application
             _unitOfWork.Commit();
             return new Response() { Mensaje = mensaje };
         }
+        public Empleado GetEmpleado(string cedula)
+        {
+            return _unitOfWork.EmpleadoRepository.
+                FindFirstOrDefault(t => t.Cedula == cedula);
+        }
+        public Credito GetCredito(string numero)
+        {
+            return _unitOfWork.CreditoRepository.
+                FindBy(t => t.Numero == numero, includeProperties: "Cuotas,Abonos").FirstOrDefault();
+        }
+        public IEnumerable<Credito> GetCreditos()
+        {
+            return _unitOfWork.CreditoRepository.FindBy(includeProperties: "Cuotas,Abonos");
+        }
+        public IEnumerable<AbonoCuota> GetAbonoCuotas()
+        {
+            return _unitOfWork.AbonoCuotaRepository.FindBy(includeProperties: "Abonos,Cuotas");
+        }
+        
+
+        
     }
     public class CrearCreditoRequest
     {

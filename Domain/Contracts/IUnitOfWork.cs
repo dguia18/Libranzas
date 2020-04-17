@@ -9,6 +9,7 @@ namespace Domain.Contracts
     {
         IEmpleadoRepository EmpleadoRepository { get; }
         ICreditoRepository CreditoRepository { get; }
+        IAbonoCuotaRepository AbonoCuotaRepository { get; }
         int Commit();
     }
 }

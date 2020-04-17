@@ -16,38 +16,39 @@ namespace WebApi.Controllers
 	{
 		readonly LibranzasContext _context;
 		readonly IUnitOfWork _unitOfWork;
+		CreditoService CreditoService;
 		public CreditoController(LibranzasContext context, IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 			_context = context;
+			CreditoService = new CreditoService(_unitOfWork);
 		}
 		[HttpPost("")]
 		public ActionResult<Response> Post(CrearCreditoRequest request)
-		{
-			CreditoService _service = new CreditoService(_unitOfWork);
-			Response response = _service.CrearCredito(request);
+		{			
+			Response response = CreditoService.CrearCredito(request);
 			return Ok(response);
 		}
 		[HttpPost("Abonar")]
 		public ActionResult<Response> Post(AbonarRequest request)
-		{
-			CreditoService _service = new CreditoService(_unitOfWork);
-			var response = _service.Abonar(request);
+		{			
+			var response = CreditoService.Abonar(request);
 			return Ok(response);
 		}
 		[HttpGet]
 		public ActionResult<IEnumerable<Credito>> GetAll()
-		{
-			UnitOfWork unitOfWork = new UnitOfWork(_context);
-			var res = unitOfWork.CreditoRepository.GetAll();
-			return res.ToList();
+		{			
+			return CreditoService.GetCreditos().ToList();
 		}
-		[HttpGet("{id}")]
-		public ActionResult<IEnumerable<Credito>> Get(long id)
+		[HttpGet("{cedula}")]
+		public ActionResult<Credito> Get(string cedula)
 		{
-			
-			var res = _unitOfWork.CreditoRepository.FindBy(t => t.Id == id);
-			return res.ToList();
+			return Ok( CreditoService.GetEmpleado(cedula)); 
+		}
+		[HttpGet("abonos")]
+		public ActionResult<IEnumerable<AbonoCuota>> GetAbonoCuotas()
+		{
+			return Ok(CreditoService.GetAbonoCuotas());
 		}
 	}
 }
