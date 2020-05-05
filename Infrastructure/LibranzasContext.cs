@@ -17,7 +17,18 @@ namespace Infrastructure
         public DbSet<AbonoCuota> AbonoCuotas { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AbonoCuota>().HasKey(ac => new {ac.CuotaId , ac.AbonoId});
+            modelBuilder.Entity<AbonoCuota>().HasKey(ac => 
+            new { ac.CuotaId, ac.AbonoId });
+
+        //    modelBuilder.Entity<AbonoCuota>()
+        //.HasOne(pt => pt.Cuota)
+        //.WithMany(p => p.AbonoCuotas)
+        //.HasForeignKey(pt => pt.CuotaId);
+
+        //    modelBuilder.Entity<AbonoCuota>()
+        //        .HasOne(pt => pt.Abono)
+        //        .WithMany(t => t.AbonoCuotas)
+        //        .HasForeignKey(pt => pt.AbonoId);
         }
     }
 }

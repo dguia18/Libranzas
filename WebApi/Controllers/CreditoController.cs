@@ -40,13 +40,18 @@ namespace WebApi.Controllers
 		{			
 			return CreditoService.GetCreditos().ToList();
 		}
-		[HttpGet("{numero}")]
-		public ActionResult<Credito> Get(string numero)
+		[HttpGet("{numero}/cuotas")]
+		public ActionResult<Credito> GetCuotas(string numero)
 		{
-			return Ok(CreditoService.GetCredito(numero));
+			return Ok(CreditoService.GetCredito(numero,"Cuotas"));
+		}
+		[HttpGet("{numero}/abonos")]
+		public ActionResult<Credito> GetAbonos(string numero)
+		{
+			return Ok(CreditoService.GetCredito(numero,"Abonos"));
 		}
 		[HttpGet("abonos")]
-		public ActionResult<IEnumerable<AbonoCuota>> GetAbonoCuotas()
+		public ActionResult<IEnumerable<Abono>> GetAbonoCuotas()
 		{
 			return Ok(CreditoService.GetAbonoCuotas());
 		}

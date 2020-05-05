@@ -15,7 +15,7 @@ namespace Domain.Test
             empleado.Cedula = "1065840833";
             empleado.Nombre = "Duvan";
             empleado.Salario = 1200000;
-            empleado.Creditos.Add(CreditBuilder.CrearCredito(7000000, 4).InicializarNumero("0001"));
+            empleado.Creditos.Add(CreditBuilder.CrearCredito(valor:7000000,plazo: 4).InicializarNumero("0001"));
         }
         [Test]
         public void ValorAAbonarNegativo()
@@ -42,12 +42,71 @@ namespace Domain.Test
             Assert.AreEqual(esperado, obtenido);
         }
         [Test]
+        public void ValorAAbonarIgualQueLaCuota()
+        {
+            empleado.Creditos.Find(x => x.Numero == "0001").Abonar(1785000);
+            var cuotas = empleado.Creditos.Find(x => x.Numero == "0001").Cuotas;
+            var cuotasEsperadas = CuotasGeneradasPorAbonoIgualACuota();
+            Assert.AreEqual(cuotasEsperadas, cuotas);
+        }
+        private List<Cuota> CuotasGeneradasPorAbonoIgualACuota()
+        {
+            empleado = new Empleado();
+            empleado.Cedula = "1065840833";
+            empleado.Nombre = "Duvan";
+            empleado.Salario = 1200000;
+            empleado.Creditos.Add(CreditBuilder.CrearCredito(7000000, 4).InicializarNumero("0001"));
+            var credito = empleado.Creditos.Find(x => x.Numero == "0001");
+            for (int i = 0; i < 4; i++)
+            {
+                credito.Cuotas[i].Estado = Estado.Pendiente;
+                credito.Cuotas[i].Saldo = 1785000;
+                credito.Cuotas[i].Valor = 1785000;
+                credito.Cuotas[i].Pagado = 0;
+            }
+            credito.Cuotas[0].Estado = Estado.Pagado;
+            credito.Cuotas[0].Saldo = 0;
+            credito.Cuotas[0].Pagado = 1785000; 
+            return credito.Cuotas;
+        }
+        [Test]
+        public void ValorAAbonarMayorAlValorDeCuota()
+        {
+            var credito = empleado.Creditos.Find(x => x.Numero == "0001");
+            credito.Abonar(1790000);
+            var cuotasEsperadas = CuotasGeneradasPorAbonoMayorACuota();
+            Assert.AreEqual(credito.Cuotas,cuotasEsperadas);
+        }
+        private List<Cuota> CuotasGeneradasPorAbonoMayorACuota()
+        {
+            empleado = new Empleado();
+            empleado.Cedula = "1065840833";
+            empleado.Nombre = "Duvan";
+            empleado.Salario = 1200000;
+            empleado.Creditos.Add(CreditBuilder.CrearCredito(7000000, 4).InicializarNumero("0001"));
+            var credito = empleado.Creditos.Find(x => x.Numero == "0001");
+            for (int i = 0; i < 4; i++)
+            {
+                credito.Cuotas[i].Estado = Estado.Pendiente;
+                credito.Cuotas[i].Saldo = 1785000;
+                credito.Cuotas[i].Valor = 1785000;
+                credito.Cuotas[i].Pagado = 0;
+            }
+            credito.Cuotas[0].Estado = Estado.Pagado;
+            credito.Cuotas[0].Saldo = 0;
+            credito.Cuotas[0].Pagado = 1785000;
+            credito.Cuotas[1].Saldo = 1780000;
+            credito.Cuotas[1].Pagado = 5000;
+            return credito.Cuotas;
+        }
+        [Test]
         public void ValorAAbonarCorrecto()
         {
             string esperado = $"Abono concluido, saldo pendiente $ {2140000}";
             string obtenido = empleado.Creditos.Find(x => x.Numero == "0001").Abonar(5000000);
             Assert.AreEqual(esperado, obtenido);
         }
+        
         [Test]
         public void EjecutarMetodoDeAbonarSinAntesValidarCAN()
         {

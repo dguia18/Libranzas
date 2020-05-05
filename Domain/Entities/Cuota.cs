@@ -8,7 +8,7 @@ namespace Domain.Entities
     {
         public double Valor { get; set; }
         public double Pagado { get; set; }
-        public DateTime FechaDePago { get; set; }
+        public DateTime FechaDePago { get; set; } = DateTime.Now;
         public Estado Estado { get; set; } = Estado.Pendiente;
         public double Saldo { get; set; }
         public virtual List<AbonoCuota> AbonoCuotas { get; set; }
@@ -32,7 +32,7 @@ namespace Domain.Entities
         }
         public override string ToString()
         {
-            return string.Format("Valor: {0}\nSaldo: {1}\nFecha de Pago: {2}\n", Valor, Saldo, FechaDePago);
+            return string.Format("\nValor: {0}\nSaldo: {1}\nFecha de Pago: {2}\n", Valor, Saldo, FechaDePago.Date);
         }
     }
     public enum Estado

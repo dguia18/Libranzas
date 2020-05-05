@@ -27,7 +27,8 @@ namespace WebApi
 			//services.AddDbContext<LibranzasContext>
 			//   (opt => opt.UseInMemoryDatabase("Libranzas"));
 
-
+			services.AddControllers().AddNewtonsoftJson(options =>
+			options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 			services.AddDbContext<LibranzasContext>
 			   (opt => opt.UseSqlServer(@"Server=LAPTOP-GEQ2K9D2\MSSQLSERVER01;Database=Libranzas;Trusted_Connection=True;MultipleActiveResultSets=true"));
 			///Inyecci�n de dependencia Especifica

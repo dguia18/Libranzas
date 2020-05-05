@@ -10,6 +10,7 @@ namespace Domain.Contracts
         IEmpleadoRepository EmpleadoRepository { get; }
         ICreditoRepository CreditoRepository { get; }
         IAbonoCuotaRepository AbonoCuotaRepository { get; }
+        IAbonoRepository AbonoRepository { get; }
         int Commit();
     }
 }

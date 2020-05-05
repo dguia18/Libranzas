@@ -48,7 +48,7 @@ namespace Application
             {
                 return new Response() { Mensaje = $"El empleado con cedula {request.CedulaEmpleado} no se encuentra registrado en el sistema" };
             }
-            Credito credito = GetCredito(request.NumeroCredito);
+            Credito credito = GetCredito(request.NumeroCredito,"Cuotas,Abonos");
             if (credito == null)
             {
                 return new Response() { Mensaje = $"Señor {empleado.Nombre}, hasta el momento no tiene un credito de numero {request.NumeroCredito}" };
@@ -62,22 +62,20 @@ namespace Application
             _unitOfWork.Commit();
             return new Response() { Mensaje = mensaje };
         }        
-        public Credito GetCredito(string numero)
+        public Credito GetCredito(string numero,string relaciones="")
         {
             return _unitOfWork.CreditoRepository.
-                FindBy(t => t.Numero == numero, includeProperties: "Cuotas,Abonos").FirstOrDefault();
+                FindBy(t => t.Numero == numero, includeProperties: relaciones).FirstOrDefault();
         }
         public IEnumerable<Credito> GetCreditos()
         {
             return _unitOfWork.CreditoRepository.FindBy(includeProperties: "Cuotas,Abonos");
         }
-        public IEnumerable<AbonoCuota> GetAbonoCuotas()
+        public IEnumerable<Abono> GetAbonoCuotas()
         {
-            return _unitOfWork.AbonoCuotaRepository.FindBy(includeProperties: "Abonos,Cuotas");
-        }
-        
-
-        
+            return _unitOfWork.AbonoRepository.
+                FindBy(includeProperties: "AbonoCuotas.Cuota");
+        }                   
     }
     public class CrearCreditoRequest
     {
